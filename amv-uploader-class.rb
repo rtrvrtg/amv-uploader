@@ -80,8 +80,12 @@ class MP4Renderer < AmvRendererBase
       cmd = "#{$Settings[:path_to_ffprobe]} -v quiet -print_format json -show_streams \"#{src.path}\""
       json_result = `#{cmd}`
       video_data = JSON.load(json_result)
-      length = video_data['streams'][0]['duration'].to_f
-      dimensions = "#{video_data['streams'][0]['width']}x#{video_data['streams'][0]['height']}"
+      if video_data.has_key? 'streams'
+        unless video_data['streams'].empty?
+          length = video_data['streams'][0]['duration'].to_f
+          dimensions = "#{video_data['streams'][0]['width']}x#{video_data['streams'][0]['height']}"
+        end
+      end
     end
 
     mark = (length / 2).to_i
